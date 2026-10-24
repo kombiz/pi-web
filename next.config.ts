@@ -58,6 +58,11 @@ const nextConfig: NextConfig = {
   // from other machines on the same LAN.
   allowedDevOrigins: [
     "127.0.0.1",
+    // A named host accepted by the API must also load dev chunks and HMR;
+    // otherwise SSR paints but the controls never hydrate on that host.
+    ...[process.env.PI_WEB_HOSTNAME, ...(process.env.PI_WEB_ALLOWED_HOSTS?.split(",") ?? [])]
+      .map((host) => host?.trim())
+      .filter((host): host is string => Boolean(host)),
     "10.*.*.*",
     // 172.16.0.0/12
     "172.16.*.*",
